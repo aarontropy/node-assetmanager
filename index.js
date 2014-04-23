@@ -14,8 +14,8 @@ var glob = require('glob'),
 
 // Asset holder variable
 var assets = {
-	css: [],
-	js: []
+	// css: [],
+	// js: []
 };
 
 exports.init = function (options) {
@@ -23,11 +23,12 @@ exports.init = function (options) {
 	var globOptions = {sync: true};
 
 	options = _.extend({
-		css: {},
-		js: {},
+		// css: {},
+		// js: {},
 		debug: true,
 		webroot: false
 	}, options);
+    groups = _.keys(_.omit(options, ['debug', 'webroot']));
 
 	/**
 	 * Filter out assets that are not files
@@ -69,19 +70,19 @@ exports.init = function (options) {
 		return files;
 	};
 
-	_.each(['css', 'js'], function (fileType) {
-		_.each(options[fileType], function (value, key) {
+	_.each(groups, function (group) {
+		_.each(options[group], function (value, key) {
 			if (!options.debug) {
-				assets[fileType].push(key);
+				assets[group].push(key);
 			} else {
-				assets[fileType] = assets[fileType].concat(getAssets(value));
+				assets[group] = assets[group].concat(getAssets(value));
 			}
 		});
 		if (options.webroot) {
 			// Strip the webroot foldername from the filepath
 			var regex = new RegExp('^' + options.webroot);
-			_.each(assets[fileType], function (value, key) {
-				assets[fileType][key] = value.replace(regex, '');
+			_.each(assets[group], function (value, key) {
+				assets[group][key] = value.replace(regex, '');
 			});
 		}
 	});
